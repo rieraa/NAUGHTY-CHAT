@@ -28,3 +28,37 @@ module.exports.register = async (req, res, next) => {
     next(ex);
   }
 };
+
+module.exports.login = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+
+    // 用户名和邮箱都能登录 此处是标识 从两个途径进行查询
+    const userByUsername = await User.findOne({ username });
+    const userByEmail = await User.findOne({ email: username });
+
+    // 接受查询到的结果
+    let user;
+
+    if (userByUsername) {
+      user = userByUsername;
+    } else if (userByEmail) {
+      user = userByEmail;
+    } else {
+      return res.json({
+        msg: "Incorrect username or password",
+        status: false,
+      });
+    }
+
+    const isPasswordValid = await brycypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.json({ msg: "Incorrect username or password", status: false });
+    }
+    delete user.password;
+    console.log("success login");
+    return res.json({ status: true, user }); // todo
+  } catch (ex) {
+    next(ex);
+  }
+};

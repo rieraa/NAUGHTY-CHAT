@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios"
 import { ToastContainer, toast } from "react-toastify";
@@ -20,6 +20,26 @@ function Register() {
     password: "",
     confirmPassword: "",
   })
+
+
+  // 错误提醒配置
+  const toastOptions = {
+    position: "bottom-right",
+    autoClose: 5000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "color"
+  }
+
+
+
+  useEffect(() => {
+    if (localStorage.getItem("chat-app-user")) {
+      // !本地存储重定向
+      navigate("/")
+    }
+  }, [])
+
 
 
   // event.preventDefault()阻止默认的表单上传事件
@@ -49,14 +69,6 @@ function Register() {
   };
 
 
-  // 错误提醒配置
-  const toastOptions = {
-    position: "bottom-right",
-    autoClose: 5000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "color"
-  }
 
 
   const handleValidation = () => {
