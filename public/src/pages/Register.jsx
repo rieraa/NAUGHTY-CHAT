@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios"
 import { ToastContainer, toast } from "react-toastify";
@@ -11,6 +11,8 @@ import { registerRoute } from "../utils/APIRoutes";
 
 
 function Register() {
+  const navigate = useNavigate()//todo
+
   // 表单中的值
   const [values, setValues] = useState({
     username: "",
@@ -26,13 +28,22 @@ function Register() {
 
     if (handleValidation()) {
       console.log("valid:", registerRoute)
-      const { username, email, password, confirmPassword } = values;
+      const { username, email, password } = values;
       // todo 看不懂了
       const { data } = await axios.post(registerRoute, {
         username,
         email,
         password,
       })
+      if (data.status === fales) {
+        toast.error(data.msg, toastOptions);
+      }
+      if (data.status === true) {
+        // 设置用户到本地
+        localStorage.setItem("chat-app-user", JSON.stringify(data.user))//todo
+        navigate("/")//todo
+      }
+
     }
   };
 

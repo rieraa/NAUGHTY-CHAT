@@ -339,6 +339,33 @@ wsServer.on("connection", (socket) => {
 
 - 在 JavaScript 中，事件对象通常在事件处理函数内部自动生成并传递给事件处理函数，无论是 `onChange`、`onClick`、`onSubmit` 还是其他事件.
 
+- 此处`    localStorage.setItem("chat-app-user", JSON.stringify(data.user))//todo`的作用
+
+  ```js
+    // event.preventDefault()阻止默认的表单上传事件
+    const handleSummit = async (event) => {
+      event.preventDefault();
+  
+      if (handleValidation()) {
+        console.log("valid:", registerRoute)
+        const { username, email, password } = values;
+        // todo 看不懂了
+        const { data } = await axios.post(registerRoute, {
+          username,
+          email,
+          password,
+        })
+        if (data.status === fales) {
+          toast.error(data.msg, toastOptions);
+        }
+        if (data.status === true) {
+          localStorage.setItem("chat-app-user", JSON.stringify(data.user))//todo
+          navigate("/")//todo
+        
+      }
+    };
+  ```
+  
   
 
 ### 相关依赖
