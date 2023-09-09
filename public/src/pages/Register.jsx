@@ -20,10 +20,12 @@ function Register() {
   })
 
 
-  //  event.preventDefault()阻止默认的表单上传事件
+  // event.preventDefault()阻止默认的表单上传事件
   const handleSummit = async (event) => {
     event.preventDefault();
+
     if (handleValidation()) {
+      console.log("valid:", registerRoute)
       const { username, email, password, confirmPassword } = values;
       // todo 看不懂了
       const { data } = await axios.post(registerRoute, {
