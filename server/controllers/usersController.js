@@ -4,6 +4,7 @@ const brycypt = require("bcrypt");
 module.exports.register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
+    // console.log(password);
     const usernameCheck = await User.findOne({ username });
     if (usernameCheck) {
       return res.json({ msg: "Username already used", status: false });
@@ -18,8 +19,9 @@ module.exports.register = async (req, res, next) => {
     const user = await User.create({
       username,
       email,
-      hashPassword,
+      password: hashPassword,
     });
+    console.log("success add");
     delete user.password;
     return res.json({ status: true, user });
   } catch (ex) {

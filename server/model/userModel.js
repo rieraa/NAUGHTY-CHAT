@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
-  uesername: {
+  username: {
     type: String,
     required: true,
     min: 3,
@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   },
   isAvatarImageSet: {
     type: Boolean,
-    default: fales,
+    default: false,
   },
   avatarImage: {
     type: String,

@@ -27,7 +27,7 @@ function Register() {
     event.preventDefault();
 
     if (handleValidation()) {
-      console.log("valid:", registerRoute)
+      // console.log("valid:", registerRoute)
       const { username, email, password } = values;
       // todo 看不懂了
       const { data } = await axios.post(registerRoute, {
@@ -35,11 +35,12 @@ function Register() {
         email,
         password,
       })
-      if (data.status === fales) {
+      if (data.status === false) {
         toast.error(data.msg, toastOptions);
       }
       if (data.status === true) {
         // 设置用户到本地
+        console.log("set local")
         localStorage.setItem("chat-app-user", JSON.stringify(data.user))//todo
         navigate("/")//todo
       }
