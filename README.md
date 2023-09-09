@@ -366,6 +366,33 @@ wsServer.on("connection", (socket) => {
     };
   ```
   
+- 此处的代码含义
+
+  ```html
+  <>
+              <Container>
+                  <div className="title-container">
+                      <h1>
+                          Pick an avatar as your profile picture
+                      </h1>
+                  </div>
+                  <div className="avatars">
+                      {avatars.map((avatar, index) => {
+                          return (
+                      {/* yi'xia */}
+                              <div className={`avatar${selectedAvatar === index}?"selected":""`}>
+  
+                                  <img src={`data:img/svg+xml;base64,${avatar}`} alt="" />
+  
+                              </div>
+                          )
+                      })}
+                  </div>
+              </Container>
+              <ToastContainer />
+          </>
+  ```
+
   
 
 ### 相关依赖
@@ -404,3 +431,6 @@ PORT=5000
 MONGO_URL="mongodb://localhost:27017/chat"
 ```
 
+### 外部api
+
+- 开源的头像api：`https://api.multiavatar.com/45678945`
