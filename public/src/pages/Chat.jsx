@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { allContactsRoute } from "../utils/APIRoutes";
 import Contacts from "../components/Contacts";
+import Welcome from "../components/Welcome";
 
 function Chat() {
   const navigate = useNavigate();
@@ -16,25 +17,21 @@ function Chat() {
 
   // 设置当前登录用户
   useEffect(() => {
-    const currentUser = async function () {
-      console.log("用户已登录");
+    const currentLoginUser = async function () {
       if (!localStorage.getItem("chat-app-user")) {
-        console.log("set current");
         navigate("/login");
       } else {
         setCurrentUser(await JSON.parse(localStorage.getItem("chat-app-user")));
       }
     };
-    currentUser();
+    currentLoginUser();
   }, []);
 
   // 检查当前用户是否设置头像 若已设置头像 则获取所有其他的用户信息
   useEffect(() => {
     const checkUserAvatar = async function () {
-      console.log("设置头像");
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
-          console.log(`${allContactsRoute}/${currentUser._id}`);
           const data = await axios.get(
             `${allContactsRoute}/${currentUser._id}`
           );
@@ -51,6 +48,7 @@ function Chat() {
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
   };
+
   return (
     <Container>
       <div className="container">
@@ -60,6 +58,7 @@ function Chat() {
           // 此处为子传父 因此通过传入一个函数来实现
           changeChat={handleChatChange}
         />
+        <Welcome currentUser={currentUser} />
       </div>
     </Container>
   );

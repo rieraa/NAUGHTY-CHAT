@@ -121,6 +121,7 @@ const Container = styled.div`
       align-items: center;
       display: flex;
       transition: 0.5s ease-in-out;
+
       .avatar {
         img {
           height: 5rem;
@@ -161,7 +162,7 @@ const Container = styled.div`
       gap: 0.5rem;
       .username {
         h2 {
-          color: red;
+          color: white;
           font-size: 1rem;
         }
       }
