@@ -4,7 +4,7 @@ const brycypt = require("bcrypt");
 module.exports.register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
-    // console.log(password);
+    // console.log(username, email, password);
     const usernameCheck = await User.findOne({ username });
     if (usernameCheck) {
       return res.json({ msg: "Username already used", status: false });
@@ -16,6 +16,7 @@ module.exports.register = async (req, res, next) => {
 
     // 加密密码并添加到数据库
     const hashPassword = await brycypt.hash(password, 10);
+    console.log("success pass");
     const user = await User.create({
       username,
       email,
@@ -81,6 +82,23 @@ module.exports.setAvatar = async (req, res, next) => {
       isSet: userData.isAvatarImageSet,
       image: userData.avatarImage,
     }); // todo
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.getAllContacts = async (req, res, next) => {
+  try {
+    // 查找所有 _id 不等于 req.params.id 的用户
+    // MongoDB的查询运算符（$ne表示"不等于"）
+    const users = await User.find({ _id: { $ne: req.params.id } }).select([
+      "email",
+      "username",
+      "avatarImage",
+      "_id",
+    ]);
+
+    return res.json(users);
   } catch (ex) {
     next(ex);
   }
