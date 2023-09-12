@@ -328,4 +328,13 @@ MONGO_URL="mongodb://localhost:27017/chat"
   
   ```
 
+- 在 React 中，通过使用函数形式的 `setState`，您可以获得先前的状态。这是因为 React 的 `setState` 函数支持接受一个回调函数，这个回调函数会在状态更新之前执行，而且它会接收到先前的状态作为参数。
+
+  ```jsx
+    // 获取到选择的表情并添加到消息中
+    const handleEmojiClick = (emojiObj) => {
+      setMsg((prevMsg) => prevMsg + emojiObj.emoji);
+    };
+  ```
+
   
