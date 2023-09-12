@@ -9,8 +9,9 @@ export default function Welcome({ currentUser }) {
         src={Robot}
         alt="Robot"
       />
+      {/* 避免传入的currentuser为空值 当 */}
       <h1>
-        Welcome,<span>{currentUser.username}</span>
+        Welcome,<span>{currentUser && currentUser.username}</span>
       </h1>
       <h3>Please select a chat to Start Messaging</h3>
     </Container>

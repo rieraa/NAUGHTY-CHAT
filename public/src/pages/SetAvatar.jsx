@@ -96,7 +96,11 @@ export default function SetAvatar() {
     <>
       {isLoading ? (
         <Container>
-          <img src={loader} alt="loader" className="loader" />
+          <img
+            src={loader}
+            alt="loader"
+            className="loader"
+          />
         </Container>
       ) : (
         <Container>
@@ -107,9 +111,9 @@ export default function SetAvatar() {
             {avatars.map((avatar, index) => {
               return (
                 <div
-                  className={`avatar ${selectedAvatar === index ? "selected" : ""
-                    }`}
-                >
+                  className={`avatar ${
+                    selectedAvatar === index ? "selected" : ""
+                  }`}>
                   <img
                     src={`data:image/svg+xml;base64,${avatar}`}
                     alt="avatar"
@@ -120,7 +124,9 @@ export default function SetAvatar() {
               );
             })}
           </div>
-          <button className="submit-btn" onClick={setProfilePicture}>
+          <button
+            className="submit-btn"
+            onClick={setProfilePicture}>
             Set as Profile Picture
           </button>
         </Container>
@@ -131,64 +137,60 @@ export default function SetAvatar() {
 }
 
 const Container = styled.div`
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    gap:3rem;
-    background-color:#131324;
-    height:100vh;
-    width:100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 3rem;
+  background-color: #131324;
+  height: 100vh;
+  width: 100vw;
 
-    
-    /* 这里也不懂 */
-    .loader{
-        max-inline-size:100%
-    };
-    .title-container{
-        h1{
-            color:white
-        }
-    }
-
-
-  
-    .avatars{
-        display:flex;
-        gap:2rem;
-        .avatar{
-            border:0.4rem solid transparent;
-            padding:0,4rem;
-            border-radius:5rem;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            transition:0.5s ease-in-out;
-            img{
-                height:6rem;
-                transition: 0.5s ease-in-out;
-            }
-        }
-        .selected{
-            border:0.4rem solid #4e0eff;
-        }
-    }
-
-    .submit-btn {
-      background-color: #997af0;
+  /* 这里也不懂 */
+  .loader {
+    max-inline-size: 100%;
+  }
+  .title-container {
+    h1 {
       color: white;
-      padding: 1rem 2rem;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 0.4rem;
-      font-size: 1rem;
-      text-transform: uppercase;
+    }
+  }
+
+  .avatars {
+    display: flex;
+    gap: 2rem;
+    .avatar {
+      border: 0.4rem solid transparent;
+      padding: 0, 4rem;
+      border-radius: 5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       transition: 0.5s ease-in-out;
-
-      &:hover {
-        background-color: #4e0eff;
-
+      img {
+        height: 6rem;
+        transition: 0.5s ease-in-out;
       }
     }
+    .selected {
+      border: 0.4rem solid #4e0eff;
+    }
+  }
+
+  .submit-btn {
+    background-color: #997af0;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    transition: 0.5s ease-in-out;
+
+    &:hover {
+      background-color: #4e0eff;
+    }
+  }
 `;
