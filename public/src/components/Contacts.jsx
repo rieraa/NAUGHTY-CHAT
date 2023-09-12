@@ -18,10 +18,6 @@ export default function Contacts({ contacts, currentUser, changeChat }) {
 
   // todo
   const changeCurrentChat = (index, contact) => {
-    console.log(
-      "🚀 ~ file: Contacts.jsx:21 ~ changeCurrentChat ~ index:",
-      index
-    );
     setCurrentSelected(index);
     changeChat(contact);
   };

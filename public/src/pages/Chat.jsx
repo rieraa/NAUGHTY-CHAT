@@ -5,6 +5,7 @@ import axios from "axios";
 import { allContactsRoute } from "../utils/APIRoutes";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
+import ChatContainer from "../components/ChatContainer";
 
 function Chat() {
   const navigate = useNavigate();
@@ -58,7 +59,11 @@ function Chat() {
           // 此处为子传父 因此通过传入一个函数来实现
           changeChat={handleChatChange}
         />
-        <Welcome currentUser={currentUser} />
+        {currentChat === undefined ? (
+          <Welcome currentUser={currentUser} />
+        ) : (
+          <ChatContainer currentChat={currentChat}></ChatContainer>
+        )}
       </div>
     </Container>
   );
