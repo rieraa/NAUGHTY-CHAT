@@ -262,6 +262,45 @@
           </>
   ```
 
+- 组件样式修改：`🚀 ~ file: Chatinput.jsx:68`
+
+  ```css
+      .emoji {
+        position: relative;
+        svg {
+          font-size: 1.5rem;
+          color: #ccd639e6;
+          cursor: pointer;
+        }
+        .EmojiPickerReact {
+          --epr-bg-color: #080420;
+          position: absolute;
+          top: -475px;
+          /* background-color: #080420; */
+          box-shadow: 0 5px 10px #9a86f3;
+          border-color: #9186f3;
+          //todo
+          ::-webkit-scrollbar {
+            background-color: #080420;
+            width: 5px;
+          }
+          ::-webkit-scrollbar-thumb {
+            background-color: #9186f3; /* 设置 thumb 的背景颜色 */
+            border-radius: 4px; /* 可选：设置 thumb 圆角 */
+          }
+          .epr-search-container {
+            input {
+              background-color: transparent;
+              border-color: #9186f3;
+            }
+          }
+          .epr-emoji-category-label {
+            background-color: #080420;
+          }
+        }
+      }
+  ```
+
   
 
 ### 相关依赖

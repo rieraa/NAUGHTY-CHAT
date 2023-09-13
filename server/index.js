@@ -4,6 +4,9 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 const userRoutes = require("./routes/UserRoutes");
+const messagesRoutes = require("./routes/MessageRoutes");
+const socket = require("socket.io");
+
 const app = express();
 require("dotenv").config(); // todo
 
@@ -14,6 +17,7 @@ app.use(express.json());
 // *挂载userRoutes到api/auth路径下
 // !路径开头一定要加 "/"
 app.use("/api/auth", userRoutes);
+app.use("/api/messages", messagesRoutes);
 
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -29,4 +33,29 @@ mongoose
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server Started on Port ${process.env.PORT}`);
+});
+
+//todo time: 3:51:25
+const io = socket(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    credentials: true,
+  },
+});
+
+global.onlineUsers = new Map();
+
+io.on("connection", (socket) => {
+  global.chatSocket = socket;
+
+  socket.on("add-user", (userId) => {
+    onlineUsers.set(userId, socket.id);
+  });
+
+  socket.on("send-msg", (data) => {
+    const sendUserSocket = onlineUsers.get(data.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+    }
+  });
 });

@@ -120,7 +120,7 @@ const Container = styled.div`
 
       .avatar {
         img {
-          height: 5rem;
+          height: 3rem;
         }
       }
       .username {
@@ -158,7 +158,6 @@ const Container = styled.div`
       gap: 0.5rem;
       .username {
         h2 {
-          color: white;
           font-size: 1rem;
         }
       }
