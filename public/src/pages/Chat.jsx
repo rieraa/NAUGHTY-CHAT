@@ -28,11 +28,22 @@ function Chat() {
     };
     currentLoginUser();
   }, []);
+
   // !设置socekt链接 用户登陆后添加到后端映射
   useEffect(() => {
+    console.log("currentUser changed:", currentUser);
     if (currentUser) {
       socket.current = io(host);
       socket.current.emit("add-user", currentUser._id);
+
+      // 移除旧的监听
+      socket.current.off("heartbeat");
+
+      // 添加对心跳消息的监听
+      socket.current.on("heartbeat", () => {
+        // 发送心跳回应
+        socket.current.emit("heartbeat_response", currentUser._id);
+      });
     }
   }, [currentUser]);
   // 检查当前用户是否设置头像 若已设置头像 则获取所有其他的用户信息

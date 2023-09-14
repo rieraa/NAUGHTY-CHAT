@@ -1,5 +1,5 @@
 const User = require("../model/userModel");
-const brycypt = require("bcrypt");
+const brycypt = require("bcryptjs");
 
 module.exports.register = async (req, res, next) => {
   try {
@@ -16,13 +16,11 @@ module.exports.register = async (req, res, next) => {
 
     // 加密密码并添加到数据库
     const hashPassword = await brycypt.hash(password, 10);
-    console.log("success pass");
     const user = await User.create({
       username,
       email,
       password: hashPassword,
     });
-    console.log("success add");
     delete user.password;
     return res.json({ status: true, user });
   } catch (ex) {

@@ -1,5 +1,5 @@
 const mesagesModel = require("../model/messageModel");
-const brycypt = require("bcrypt");
+const brycypt = require("bcryptjs");
 module.exports.addMessage = async (req, res, next) => {
   try {
     const { from, to, message } = req.body;
