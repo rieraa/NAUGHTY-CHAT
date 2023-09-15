@@ -4,7 +4,7 @@ import Picker from "emoji-picker-react";
 import { IoMdSend } from "react-icons/io";
 import { BsEmojiSmileFill } from "react-icons/bs";
 
-export default function Input({ handleSendMessage }) {
+export default function Input({ handleSendMessage, socket, currentChat }) {
   // 表情选择器显示状态
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [msg, setMsg] = useState("");
@@ -52,6 +52,13 @@ export default function Input({ handleSendMessage }) {
           onChange={(e) => setMsg(e.target.value)}
           onClick={() => {
             setShowEmojiPicker(false);
+            // 发送正在输入事件
+            socket.current.emit("typing", currentChat._id);
+          }}
+          onBlur={() => {
+            // 发送停止输入事件
+            socket.current.emit("stopTyping", currentChat._id);
+            console.log(23123);
           }}
         />
         <button className="submit">

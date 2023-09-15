@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios"
+import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-
-
 import Logo from "../assets/logo.svg";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { loginRoute } from "../utils/APIRoutes";
 
-
 function Login() {
-  const navigate = useNavigate()//todo
+  const navigate = useNavigate(); //todo
 
   // 表单中的值
   const [values, setValues] = useState({
     username: "",
     password: "",
-  })
-
+  });
 
   // 错误提醒配置
   const toastOptions = {
@@ -26,16 +22,15 @@ function Login() {
     autoClose: 5000,
     pauseOnHover: true,
     draggable: true,
-    theme: "color"
-  }
+    theme: "color",
+  };
 
   useEffect(() => {
     if (localStorage.getItem("chat-app-user")) {
       // !本地存储重定向
-      navigate("/")
+      navigate("/");
     }
-  }, [])
-
+  }, []);
 
   // event.preventDefault()阻止默认的表单上传事件
   const handleSummit = async (event) => {
@@ -47,21 +42,19 @@ function Login() {
       const { data } = await axios.post(loginRoute, {
         username,
         password,
-      })
+      });
       if (data.status === false) {
         toast.error(data.msg, toastOptions);
       }
       if (data.status === true) {
         // 设置用户到本地
-        console.log("set local")
-        localStorage.setItem("chat-app-user", JSON.stringify(data.user))//todo
+        console.log("set local");
+        localStorage.setItem("chat-app-user", JSON.stringify(data.user)); //todo
 
-        navigate("/")//todo
+        navigate("/"); //todo
       }
-
     }
   };
-
 
   const handleValidation = () => {
     const { username, password } = values;
@@ -73,18 +66,14 @@ function Login() {
       return false;
     }
     return true;
-
-
-  }
-
+  };
 
   const handleChange = (event) => {
-    // !新的赋值方法 
+    // !新的赋值方法
     // TODO了解target的用处
     setValues({
-      ...values,//旧值复制来的对象
-      [event.target.name]: event.target.value
-
+      ...values, //旧值复制来的对象
+      [event.target.name]: event.target.value,
     });
   };
   return (
@@ -94,10 +83,12 @@ function Login() {
         <form
           onSubmit={(event) => {
             handleSummit(event);
-          }}
-        >
+          }}>
           <div className="brand">
-            <img src={Logo} alt="Logo" />
+            <img
+              src={Logo}
+              alt="Logo"
+            />
             <h1>NAUGHYT</h1>
           </div>
           <input
@@ -115,7 +106,7 @@ function Login() {
           />
           <button type="submit">Login</button>
           <span>
-            Don't have an account ?  <Link to="/register"> Register </Link>
+            Don't have an account ? <Link to="/register"> Register </Link>
           </span>
         </form>
       </FormContainer>
@@ -125,7 +116,6 @@ function Login() {
 }
 
 const FormContainer = styled.div`
-
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -170,7 +160,7 @@ const FormContainer = styled.div`
 
       &:focus {
         border: 0.1rem solid #997af0;
-        outline: none
+        outline: none;
       }
     }
 
@@ -188,7 +178,6 @@ const FormContainer = styled.div`
 
       &:hover {
         background-color: #4e0eff;
-
       }
     }
 
@@ -204,7 +193,6 @@ const FormContainer = styled.div`
       }
     }
   }
-   
 `;
 
 export default Login;

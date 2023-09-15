@@ -7,6 +7,8 @@ import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
 import ChatContainer from "../components/ChatContainer";
 import { io } from "socket.io-client";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Chat() {
   const socket = useRef();
@@ -16,6 +18,14 @@ function Chat() {
   const [currentUser, setCurrentUser] = useState(undefined);
   // 当前聊天对象
   const [currentChat, setCurrentChat] = useState(undefined);
+
+  const toastOptions = {
+    position: "bottom-right",
+    autoClose: 5000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "color",
+  };
 
   // 设置当前登录用户
   useEffect(() => {
@@ -34,16 +44,7 @@ function Chat() {
     console.log("currentUser changed:", currentUser);
     if (currentUser) {
       socket.current = io(host);
-      socket.current.emit("add-user", currentUser._id);
-
-      // 移除旧的监听
-      socket.current.off("heartbeat");
-
-      // 添加对心跳消息的监听
-      socket.current.on("heartbeat", () => {
-        // 发送心跳回应
-        socket.current.emit("heartbeat_response", currentUser._id);
-      });
+      socket.current.emit("add-user", currentUser);
     }
   }, [currentUser]);
   // 检查当前用户是否设置头像 若已设置头像 则获取所有其他的用户信息
@@ -69,24 +70,27 @@ function Chat() {
   };
 
   return (
-    <Container>
-      <div className="container">
-        <Contacts
-          contacts={contacts}
-          currentUser={currentUser}
-          // 此处为子传父 因此通过传入一个函数来实现
-          changeChat={handleChatChange}
-        />
-        {currentChat === undefined ? (
-          <Welcome currentUser={currentUser} />
-        ) : (
-          <ChatContainer
-            currentChat={currentChat}
+    <>
+      <Container>
+        <div className="container">
+          <Contacts
+            contacts={contacts}
             currentUser={currentUser}
-            socket={socket}></ChatContainer>
-        )}
-      </div>
-    </Container>
+            // 此处为子传父 因此通过传入一个函数来实现
+            changeChat={handleChatChange}
+          />
+          {currentChat === undefined ? (
+            <Welcome currentUser={currentUser} />
+          ) : (
+            <ChatContainer
+              currentChat={currentChat}
+              currentUser={currentUser}
+              socket={socket}></ChatContainer>
+          )}
+        </div>
+      </Container>
+      <ToastContainer />
+    </>
   );
 }
 

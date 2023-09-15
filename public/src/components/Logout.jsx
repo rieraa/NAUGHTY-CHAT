@@ -4,7 +4,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { BiPowerOff } from "react-icons/bi";
 
-export default function Logout() {
+export default function Logout({ socket }) {
   const navigate = useNavigate();
   const handleclick = async () => {
     localStorage.clear();

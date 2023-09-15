@@ -39,7 +39,7 @@ const server = app.listen(process.env.PORT, () => {
 //todo time: 3:51:25
 const io = socket(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
     credentials: true,
   },
 });
@@ -47,59 +47,43 @@ const io = socket(server, {
 const onlineUsers = new Map();
 
 io.on("connection", (socket) => {
-  let user_id;
-
   global.chatSocket = socket;
 
-  socket.on("add-user", (userId) => {
-    onlineUsers.set(userId, socket.id);
-    user_id = userId;
-    console.log("add" + userId);
-    console.log(onlineUsers);
+  setInterval(() => {}, 10000);
 
-    // 通知其他在线用户有新用户上线
-    socket.broadcast.emit("user-online", userId);
+  // 新用户登录
+  socket.on("add-user", (currentUser) => {
+    onlineUsers.set(currentUser._id, socket.id);
   });
 
+  // 用户发送消息
   socket.on("send-msg", (data) => {
     const sendUserSocket = onlineUsers.get(data.to);
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+      socket.to(sendUserSocket).emit("msg-recieve", data);
     }
   });
 
-  // 在每次发送心跳消息时设置一个超时计时器
-  let heartbeatTimeout;
-
-  // 设置心跳检测定时器
-  const startHeartbeat = (user_id) => {
-    heartbeatTimeout = setTimeout(() => {
-      // 超时逻辑，例如关闭连接
-      socket.disconnect(true); // 断开连接并清除所有监听
-      console.log("Connection timed out. Disconnecting client." + socket.id);
-      // 通知其他在线用户有用户下线
-      socket.broadcast.emit("user-offline", user_id);
-      onlineUsers.delete(user_id);
-      console.log(onlineUsers);
-    }, 31000); // 设置超时时间为 4 秒
-  };
-
-  // 设置心跳检测定时器
-  const heartbeatInterval = setInterval(() => {
-    // 向前端发送心跳消息
-    socket.emit("heartbeat", "heartbeat");
-  }, 30000); // 每30秒发送一次心跳消息
-
-  // 监听心跳回应
-  socket.on("heartbeat_response", (user_id) => {
-    // 收到前端的心跳回应，表示前端在线
-    console.log("client:" + user_id + " alive " + Date());
-    // 重置超时计时器
-    clearTimeout(heartbeatTimeout);
-    // 重新开始心跳检测
-    startHeartbeat(user_id);
+  // 当前聊天用户在线状态
+  socket.on("inOn", (user_id) => {
+    if (onlineUsers.has(user_id)) {
+      socket.emit("isOnMsg", "success");
+    } else {
+      socket.emit("isOnMsg", "error");
+    }
   });
 
-  // 开始心跳检测
-  startHeartbeat();
+  // 监听客户端发送的正在输入事件
+  socket.on("typing", (typing_id) => {
+    const sendUserSocket = onlineUsers.get(typing_id);
+    // 广播给其他用户，显示该用户正在输入
+    socket.to(sendUserSocket).emit("userTyping", typing_id);
+  });
+
+  // 监听客户端发送的停止输入事件
+  socket.on("stopTyping", (typing_id) => {
+    const sendUserSocket = onlineUsers.get(typing_id);
+    // 广播给其他用户，停止显示该用户正在输入
+    socket.to(sendUserSocket).emit("stopTyping", typing_id);
+  });
 });

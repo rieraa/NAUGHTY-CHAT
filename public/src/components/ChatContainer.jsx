@@ -5,11 +5,14 @@ import ChatInPut from "./Input";
 import axios from "axios";
 import { sendMessageRoute, getAllMessagesRoute } from "../utils/APIRoutes";
 import { v4 as uuidv4, v4 } from "uuid";
+import { Badge } from "antd";
 
 export default function ChatContainer({ currentChat, currentUser, socket }) {
   const [messages, setMessages] = useState([]);
+  const [istyping, setIsTyping] = useState(false);
   // !
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [inOnline, setIsOnline] = useState("error");
   const scrollRef = useRef();
 
   // 获得当前聊天联系人的聊天记录
@@ -22,8 +25,15 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
         });
         setMessages(response.data);
       };
-      getAllMsg();
+
+      getAllMsg(); // 加载历史消息
     }
+    console.log("change chat");
+
+    socket.current.emit("inOn", currentChat._id);
+    socket.current.on("isOnMsg", (status) => {
+      setIsOnline(status);
+    });
   }, [currentChat]);
 
   const handleSendMessage = async (msg) => {
@@ -44,14 +54,36 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
     msgs.push({ fromSelf: true, message: msg });
     setMessages(msgs);
   };
+
   // !!!! 监听器
   useEffect(() => {
     if (socket.current) {
-      socket.current.on("msg-recieve", (msg) => {
-        setArrivalMessage({ fromSelf: false, message: msg });
+      // 移除旧的监听器
+      socket.current.off("msg-recieve");
+
+      //新设置监听器。这样可以确保每次切换聊天对象时，都只有与当前聊天对象相关的消息会被接收
+      socket.current.on("msg-recieve", (data) => {
+        if (data.from === currentChat._id) {
+          setArrivalMessage({ fromSelf: false, message: data.msg });
+        }
+      });
+
+      setIsTyping(false);
+      socket.current.on("userTyping", (typing_id) => {
+        setIsTyping(true);
+      });
+
+      socket.current.on("stopTyping", (typing_id) => {
+        console.log(
+          "🚀 ~ file: ChatContainer.jsx:77 ~ socket.current.on ~ typing_id:",
+          typing_id
+        );
+
+        setIsTyping(false);
       });
     }
-  }, []);
+  }, [currentChat]);
+
   // !!!!!!!
   useEffect(() => {
     arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
@@ -60,6 +92,9 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {}, [currentChat]);
+
   return (
     <>
       {currentChat && (
@@ -74,10 +109,16 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
               </div>
 
               <div className="username">
-                <h3>{currentChat && currentChat.username}</h3>
+                <h3>
+                  {istyping
+                    ? "is typing ……"
+                    : currentChat && currentChat.username}
+                </h3>
+                <Badge status={inOnline} />
               </div>
             </div>
-            <Logout />
+
+            <Logout socket={socket} />
           </div>
 
           <div className="chat-messages">
@@ -100,7 +141,11 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
               );
             })}
           </div>
-          <ChatInPut handleSendMessage={handleSendMessage} />
+          <ChatInPut
+            handleSendMessage={handleSendMessage}
+            socket={socket}
+            currentChat={currentChat}
+          />
         </Container>
       )}
     </>
@@ -131,6 +176,9 @@ const Container = styled.div`
         }
       }
       .username {
+        display: flex;
+        padding-top: 0.5rem;
+        gap: 1rem;
         h3 {
           color: white;
         }
